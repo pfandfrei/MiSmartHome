@@ -1,9 +1,8 @@
 <?php
 /*
- * Homegear Xiaomi Smarthome V0.1 for homegear 0.7.x
+ * Homegear Xiaomi Smarthome for Homegear with PHP 7.4
  * (c) Frank Motzkau 2020
  */
-
 
 $basedir = __DIR__.'/../../';
 if (file_exists($basedir.'lib/Homegear/'))
