@@ -14,10 +14,10 @@ class MiGenericSocket extends MiBaseDevice
     const STATE_UNKNOWN = 2;
     
     private $_type_id;
-    private $_status;
-    private $_load_voltage;
-    private $_load_power;
-    private $_power_consumed;
+    public $_status;
+    public $_load_voltage;
+    public $_load_power;
+    public $_power_consumed;
     
     public function __construct($config, $model)
     {
