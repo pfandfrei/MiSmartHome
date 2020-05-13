@@ -70,3 +70,8 @@ final class MiLogger
     }
 }
 
+function MiErrorHandler($errno, $errstr, $errfile, $errline) 
+{
+    MiLogger::Instance()->error_log($errno.' '.$errstr.' '.$errfile.' '.$errline);
+    return false;
+}

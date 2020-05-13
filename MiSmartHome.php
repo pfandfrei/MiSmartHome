@@ -42,6 +42,9 @@ $eventThread = function(string $scriptId, int $peerId, Channel $eventChannel, Ch
     {
         include $basedir.'lib/Homegear/Homegear.php';
     }
+    include "MiLogger.php";
+
+    $old_error_handler = set_error_handler("MiErrorHandler");
 
     $hg = new \Homegear\Homegear();
     if ($hg->registerThread($scriptId) === false)
@@ -111,6 +114,8 @@ $eventThread = function(string $scriptId, int $peerId, Channel $eventChannel, Ch
         {
         }
     }
+
+    set_error_handler($old_error_handler);
 };
 
 $listenerThread = function(string $scriptId, Channel $listenerChannel, Channel $workerChannel)
@@ -123,6 +128,8 @@ $listenerThread = function(string $scriptId, Channel $listenerChannel, Channel $
     include_once "MiConstants.php";
     include_once "MiLogger.php";
 
+    $old_error_handler = set_error_handler("MiErrorHandler");
+
     if (FALSE === ($socket_recv = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP)))
     {
         die("$errstr ($errno)");
@@ -133,6 +140,7 @@ $listenerThread = function(string $scriptId, Channel $listenerChannel, Channel $
     {
         // socket is used by another gateway => stop thread and notify worker
         $workerChannel->send(['name' => 'stop', 'value' => true]);
+        set_error_handler($old_error_handler);
         return true;
     }
 
@@ -140,6 +148,7 @@ $listenerThread = function(string $scriptId, Channel $listenerChannel, Channel $
     if ($hg->registerThread($scriptId) === false)
     {
         $hg->log(2, 'Could not register thread.');
+        set_error_handler($old_error_handler);
         return false;
     }
 
@@ -176,6 +185,9 @@ $workerThread = function(string $scriptId, Channel $workerChannel, Channel $even
         include $basedir.'lib/Homegear/Homegear.php';
     }
     include "MiCentral.php";
+    include "MiLogger.php";
+
+    $old_error_handler = set_error_handler("MiErrorHandler");
 
     $hg = new \Homegear\Homegear();
     if ($hg->registerThread($scriptId) === false)
@@ -205,6 +217,7 @@ $workerThread = function(string $scriptId, Channel $workerChannel, Channel $even
                     $events->addChannel($workerChannel);
                     if ($event->type == Event\Type::Close)
                     {
+                        set_error_handler($old_error_handler);
                         return true; //Stop
                     }
                     else if ($event->type == Event\Type::Read)
@@ -216,6 +229,7 @@ $workerThread = function(string $scriptId, Channel $workerChannel, Channel $even
                             {               
                                 // notify event thread
                                 $eventChannel->send(['name' => 'stop', 'value' => true]);
+                                set_error_handler($old_error_handler);
                                 return true; //Stop
                             }
                             case 'handleData':
@@ -367,8 +381,11 @@ class HomegearDevice extends HomegearDeviceBase
     }
 }
 
+$old_error_handler = set_error_handler("MiErrorHandler");
 
 $mainDevice = new HomegearDevice();
 $mainDevice->init($peerId);
 $mainDevice->start();
 $mainDevice->waitForStop();
+      
+set_error_handler($old_error_handler);
