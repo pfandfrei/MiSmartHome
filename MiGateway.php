@@ -308,56 +308,63 @@ class MiGateway
         {
             if ($event['PEERID'] == $this->_peerId)
             {
-                switch ($event['VARIABLE'])
+                if (array_key_exists('VARIABLE', $event))
                 {
-                    case 'ENABLE':
-                        if ($event['VALUE'])
-                        {
-                            $rgbh = $hg->getValue($this->_peerId, 1, 'RGB_OLD');
-                            $this->setRGB($hg, $rgbh);
-                        }
-                        else
-                        {
-                            $this->setRGB($hg, 0);
-                        }
-                        break;
-                    case 'BRIGHTNESS':
-                    case 'RGB':
-                        $rgb = $hg->getValue($this->_peerId, 1, 'RGB');
-                        $brightness = $hg->getValue($this->_peerId, 1, 'BRIGHTNESS');
-                        $rgbh = $this->calcRGBH($brightness, $rgb);
-                        $enabled = $hg->getValue($this->_peerId, 1, 'ENABLE');
-                        $this->_rgb = $rgb;
-                        $this->_brightness = $brightness;
-                        $hg->setValue($this->_peerId, 1, 'RGB_OLD', $rgbh);
-                        if ($enabled)
-                        {
-                            $this->setRGB($hg, $rgbh);
-                        }
-                        break;
-                    case 'MUSIC_ID':
-                    case 'VOLUME':
-                        $this->_mid = $hg->getValue($this->_peerId, 2, 'MUSIC_ID');
-                        $this->_vol = $hg->getValue($this->_peerId, 2, 'VOLUME');
-                        $enabled = $hg->getValue($this->_peerId, 2, 'PLAY');
-                        $hg->setValue($this->_peerId, 2, 'MUSIC_ID_OLD', $this->_mid);
-                        if ($enabled)
-                        {
-                            $this->playMusic($hg, $this->_mid, $this->_vol);
-                        }
-                        break;
-                    case 'PLAY':
-                        if ($event['VALUE'])
-                        {
-                            $mid = $hg->getValue($this->_peerId, 2, 'MUSIC_ID_OLD');
-                            $vol = $hg->getValue($this->_peerId, 2, 'VOLUME');
-                            $this->playMusic($hg, $mid, $vol);
-                        }
-                        else
-                        {
-                            $this->stopMusic($hg);
-                        }
-                        break;
+                    switch ($event['VARIABLE'])
+                    {
+                        case 'ENABLE':
+                            if ($event['VALUE'])
+                            {
+                                $rgbh = $hg->getValue($this->_peerId, 1, 'RGB_OLD');
+                                $this->setRGB($hg, $rgbh);
+                            }
+                            else
+                            {
+                                $this->setRGB($hg, 0);
+                            }
+                            break;
+                        case 'BRIGHTNESS':
+                        case 'RGB':
+                            $rgb = $hg->getValue($this->_peerId, 1, 'RGB');
+                            $brightness = $hg->getValue($this->_peerId, 1, 'BRIGHTNESS');
+                            $rgbh = $this->calcRGBH($brightness, $rgb);
+                            $enabled = $hg->getValue($this->_peerId, 1, 'ENABLE');
+                            $this->_rgb = $rgb;
+                            $this->_brightness = $brightness;
+                            $hg->setValue($this->_peerId, 1, 'RGB_OLD', $rgbh);
+                            if ($enabled)
+                            {
+                                $this->setRGB($hg, $rgbh);
+                            }
+                            break;
+                        case 'MUSIC_ID':
+                        case 'VOLUME':
+                            $this->_mid = $hg->getValue($this->_peerId, 2, 'MUSIC_ID');
+                            $this->_vol = $hg->getValue($this->_peerId, 2, 'VOLUME');
+                            $enabled = $hg->getValue($this->_peerId, 2, 'PLAY');
+                            $hg->setValue($this->_peerId, 2, 'MUSIC_ID_OLD', $this->_mid);
+                            if ($enabled)
+                            {
+                                $this->playMusic($hg, $this->_mid, $this->_vol);
+                            }
+                            break;
+                        case 'PLAY':
+                            if ($event['VALUE'])
+                            {
+                                $mid = $hg->getValue($this->_peerId, 2, 'MUSIC_ID_OLD');
+                                $vol = $hg->getValue($this->_peerId, 2, 'VOLUME');
+                                $this->playMusic($hg, $mid, $vol);
+                            }
+                            else
+                            {
+                                $this->stopMusic($hg);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    MiLogger::Instance()->exception_log(json_encode($event));
                 }
             }
             else

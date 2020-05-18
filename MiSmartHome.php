@@ -42,7 +42,7 @@ $eventThread = function(string $scriptId, int $peerId, Channel $eventChannel, Ch
     {
         include $basedir.'lib/Homegear/Homegear.php';
     }
-    include "MiLogger.php";
+    include_once "MiLogger.php";
 
     $old_error_handler = set_error_handler("MiErrorHandler");
 
