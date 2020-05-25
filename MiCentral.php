@@ -34,11 +34,12 @@ class MiCentral
 
     public function __construct()
     {       
-        $this->hg = new \Homegear\Homegear();
     }
 
     public function discover()
     {
+        $this->hg = new \Homegear\Homegear();
+        
         $socket = socket_create(AF_INET, SOCK_DGRAM, 0);
         socket_set_option($socket, SOL_SOCKET, SO_BROADCAST, true);
         socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, array('sec' => MiConstants::DISCOVER_TIMEOUT, 'usec' => '0'));
