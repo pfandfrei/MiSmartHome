@@ -224,6 +224,7 @@ class MiGateway
                 case MiConstants::MODEL_SWITCH:
                 case MiConstants::MODEL_SWITCH_AQ2:
                 case MiConstants::MODEL_SWITCH_AQ3:
+                case MiConstants::MODEL_LUMI_SWITCH_AQ3:
                 case MiConstants::MODEL_REMOTE_B1ACN01:
                     $this->_devices[$deviceid] = new MiSwitch($data, $deviceinfo->model);
                     break;
